@@ -1,0 +1,56 @@
+## Derleme (Build) çıktıları ve klasörleri
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Re]leasePublic/
+x64/
+x86/
+build/
+bin/
+obj/
+
+## Visual Studio 
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## .NET Core / .NET 5+ / .NET 8+ 
+.sharpDevelop/
+坐标/
+*.userprefs
+ide/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln.swp
+
+##  (NuGet)
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+pkgs/
+
+## Visual Studio Code 
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/code-workspace
+
+*.log
+.DS_Store
+Thumbs.db
+
+## ==========================================
+##  (appsettings)
+appsettings.Development.json
+appsettings.Local.json
+appsettings.json
+# *.env dosyaları gibi diğer gizli çevre değişkenleri:
+*.env
+*.env.local

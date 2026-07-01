@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modules\Cortex.Module.Issues\Cortex.Module.Issues.Application\Cortex.Module.Issues.Application.csproj" />
+    <ProjectReference Include="..\Modules\Cortex.Module.Issues\Cortex.Module.Issues.Infrastructure\Cortex.Module.Issues.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

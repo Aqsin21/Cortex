@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Cortex.Api/Cortex.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/">
+    <Project Path="src/BuildingBlocks/Cortex.Shared/Cortex.Shared.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Cortex.Module.Auth/">
+    <Project Path="src/Modules/Cortex.Module.Auth/Cortex.Module.Auth.Application/Cortex.Module.Auth.Application.csproj" Id="1afb4cea-9483-4590-bba1-6912ab3074ad" />
+    <Project Path="src/Modules/Cortex.Module.Auth/Cortex.Module.Auth.Domain/Cortex.Module.Auth.Domain.csproj" Id="064e72c3-43ab-483e-a9b7-7e7d045679da" />
+    <Project Path="src/Modules/Cortex.Module.Auth/Cortex.Module.Auth.Infrastructure/Cortex.Module.Auth.Infrastructure.csproj" Id="dcae30e8-5cff-41f4-ac92-0df10175c9b7" />
+  </Folder>
+  <Folder Name="/src/Modules/Cortex.Module.Issues/">
+    <Project Path="src/Modules/Cortex.Module.Issues/Cortex.Module.Issues.Application/Cortex.Module.Issues.Application.csproj" />
+    <Project Path="src/Modules/Cortex.Module.Issues/Cortex.Module.Issues.Domain/Cortex.Module.Issues.Domain.csproj" />
+    <Project Path="src/Modules/Cortex.Module.Issues/Cortex.Module.Issues.Infrastructure/Cortex.Module.Issues.Infrastructure.csproj" />
+  </Folder>
+</Solution>
