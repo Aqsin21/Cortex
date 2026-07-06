@@ -31,6 +31,7 @@ namespace Cortex.Module.Auth.Infrastructure.Extensions
             .AddRoles<IdentityRole>() 
             .AddEntityFrameworkStores<AuthDbContext>();
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<ITokenService, JwtTokenService>();
 
             services.AddMediatR(cfg =>
                 cfg.RegisterServicesFromAssembly(typeof(RegisterCommand).Assembly));

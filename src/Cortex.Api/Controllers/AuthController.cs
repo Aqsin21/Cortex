@@ -1,4 +1,5 @@
-﻿using Cortex.Module.Auth.Application.Register;
+﻿using Cortex.Module.Auth.Application.Login;
+using Cortex.Module.Auth.Application.Register;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,16 @@ namespace Cortex.Api.Controllers
                 return BadRequest(result.Errors);
 
             return Ok(new { userId = result.UserId });
+        }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            if (!result.Succeeded)
+                return Unauthorized(new { error = result.Error });
+
+            return Ok(new { token = result.Token });
         }
 
     }

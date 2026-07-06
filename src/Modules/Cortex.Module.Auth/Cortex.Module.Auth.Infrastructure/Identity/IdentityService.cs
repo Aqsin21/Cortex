@@ -1,12 +1,6 @@
 ﻿using Cortex.Module.Auth.Application.Abstraction;
 using Cortex.Module.Auth.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Cortex.Module.Auth.Infrastructure.Identity
 {
     public class IdentityService : IIdentityService
@@ -36,6 +30,33 @@ namespace Cortex.Module.Auth.Infrastructure.Identity
                 Succeeded = result.Succeeded,
                 UserId = result.Succeeded ? user.Id : null,
                 Errors = result.Errors.Select(e => e.Description)
+            };
+        }
+        public async Task<LoginOperationResult> ValidateCredentialsAsync(string email, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user is null)
+            {
+                return new LoginOperationResult { Succeeded = false, Error = "Email or Password is wrong." };
+            }
+
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, password);
+
+            if (!isPasswordValid)
+            {
+                return new LoginOperationResult { Succeeded = false, Error = "Email or Password is wrong." };
+            }
+
+            if (!user.IsActive)
+            {
+                return new LoginOperationResult { Succeeded = false, Error = "Account is not active." };
+            }
+            return new LoginOperationResult
+            {
+                Succeeded = true,
+                UserId = user.Id,
+                Email = user.Email
             };
         }
     }
