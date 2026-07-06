@@ -15,8 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Modules\Cortex.Module.Auth\Cortex.Module.Auth.Infrastructure\Cortex.Module.Auth.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Cortex.Module.Issues\Cortex.Module.Issues.Application\Cortex.Module.Issues.Application.csproj" />
     <ProjectReference Include="..\Modules\Cortex.Module.Issues\Cortex.Module.Issues.Infrastructure\Cortex.Module.Issues.Infrastructure.csproj" />
+	  <ProjectReference Include="..\Modules\Cortex.Module.Auth\Cortex.Module.Auth.Infrastructure\Cortex.Module.Auth.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
