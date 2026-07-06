@@ -1,4 +1,7 @@
-﻿using Cortex.Module.Auth.Domain.Entities;
+﻿using Cortex.Module.Auth.Application.Abstraction;
+using Cortex.Module.Auth.Application.Register;
+using Cortex.Module.Auth.Domain.Entities;
+using Cortex.Module.Auth.Infrastructure.Identity;
 using Cortex.Module.Auth.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +30,10 @@ namespace Cortex.Module.Auth.Infrastructure.Extensions
             })
             .AddRoles<IdentityRole>() 
             .AddEntityFrameworkStores<AuthDbContext>();
+            services.AddScoped<IIdentityService, IdentityService>();
 
+            services.AddMediatR(cfg =>
+                cfg.RegisterServicesFromAssembly(typeof(RegisterCommand).Assembly));
             return services;
         }
     }
