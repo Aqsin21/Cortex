@@ -10,6 +10,12 @@ namespace Cortex.Module.Auth.Application.Abstraction
     {
         Task<IdentityOperationResult> RegisterAsync(string email, string password, string firstName, string lastName);
         Task<LoginOperationResult> ValidateCredentialsAsync(string email, string password);
+        Task<UserLookupResult?> FindByEmailAsync(string email);
+    }
+    public class UserLookupResult
+    {
+        public required string UserId { get; set; }
+        public required string FullName { get; set; }
     }
     public class IdentityOperationResult
     {

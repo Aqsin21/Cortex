@@ -59,5 +59,16 @@ namespace Cortex.Module.Auth.Infrastructure.Identity
                 Email = user.Email
             };
         }
+        public async Task<UserLookupResult?> FindByEmailAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null) return null;
+
+            return new UserLookupResult
+            {
+                UserId = user.Id,
+                FullName = $"{user.FirstName} {user.LastName}"
+            };
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace Cortex.Api.Controllers
                 return Unauthorized();
 
             var command = new CreateWorkspaceCommand
-            {
+            {   
                 Name = request.Name,
                 OwnerId = userId,
                 OwnerFullName = request.OwnerFullName

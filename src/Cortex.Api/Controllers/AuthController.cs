@@ -1,5 +1,6 @@
 ﻿using Cortex.Module.Auth.Application.Login;
 using Cortex.Module.Auth.Application.Register;
+using Cortex.Module.Auth.Application.Users.SearchByEmail;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,17 @@ namespace Cortex.Api.Controllers
             var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
             var email = User.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
             return Ok(new { userId, email });
+        }
+        [HttpGet("users/search")]
+        [Authorize]
+        public async Task<IActionResult> SearchUser([FromQuery] string email)
+        {
+            var result = await _mediator.Send(new SearchUserByEmailQuery { Email = email });
+
+            if (!result.Found)
+                return NotFound();
+
+            return Ok(new { userId = result.UserId, fullName = result.FullName });
         }
     }
 }
