@@ -5,6 +5,8 @@
         public Guid Id { get; set; }
         public required string Name { get; set; }
         public required string Description { get; set; }
+        public Guid WorkspaceId { get; set; }      
+        public Workspace Workspace { get; set; } = null!;
 
         // Time management
         public DateTime CreatedDate { get; set; }

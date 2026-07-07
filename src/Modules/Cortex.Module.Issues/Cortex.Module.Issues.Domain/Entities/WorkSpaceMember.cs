@@ -4,6 +4,8 @@
     {
         public Guid Id { get; set; }
         public required string UserId { get; set; }
+        public Guid WorkspaceId { get; set; }
+        public Workspace Workspace { get; set; } = null!;
         public required string FullName { get; set; }
         public Guid WorkSpaceRolId {  get; set; }
         public WorkSpaceRole WorkSpaceRole { get; set; } = null!;
@@ -12,3 +14,4 @@
         public ICollection<Issue> AssignedIssues { get; set; } = new List<Issue>();
     }
 }
+    

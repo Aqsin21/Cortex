@@ -16,19 +16,25 @@ namespace Cortex.Module.Issues.Infrastructure.Persistence
         public DbSet<WorkSpaceMember> WorkSpaceMembers { get; set; }
         public DbSet<WorkSpaceRole> WorkSpaceRoles { get; set; }
         public DbSet<ProjectMember> ProjectMembers { get; set; }
+        public DbSet<Workspace> Workspaces { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-    
+
             modelBuilder.Entity<Project>(entity =>
             {
                 entity.HasKey(p => p.Id);
                 entity.Property(p => p.Name).HasMaxLength(150).IsRequired();
                 entity.Property(p => p.Description).HasMaxLength(1000);
+
+                entity.HasOne(p => p.Workspace)
+                    .WithMany(w => w.Projects)
+                    .HasForeignKey(p => p.WorkspaceId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
-     
+
             modelBuilder.Entity<ProjectMember>(entity =>
             {
                 entity.HasKey(pm => pm.Id);
@@ -78,6 +84,24 @@ namespace Cortex.Module.Issues.Infrastructure.Persistence
                     .WithMany(m => m.AssignedIssues)
                     .HasForeignKey(i => i.AssigneeId)
                     .OnDelete(DeleteBehavior.SetNull); 
+            });
+            modelBuilder.Entity<WorkSpaceMember>(entity =>
+            {
+                entity.HasKey(m => m.Id);
+                entity.Property(m => m.FullName).HasMaxLength(200).IsRequired();
+
+                entity.Property(m => m.UserId).HasMaxLength(450).IsRequired();
+                entity.HasIndex(m => m.UserId);
+
+                entity.HasOne(m => m.WorkSpaceRole)
+                    .WithMany(r => r.Members)
+                    .HasForeignKey(m => m.WorkSpaceRolId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(m => m.Workspace)
+                    .WithMany(w => w.Members)
+                    .HasForeignKey(m => m.WorkspaceId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }
