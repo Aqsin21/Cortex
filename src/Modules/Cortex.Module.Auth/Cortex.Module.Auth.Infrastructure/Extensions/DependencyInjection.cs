@@ -3,10 +3,13 @@ using Cortex.Module.Auth.Application.Register;
 using Cortex.Module.Auth.Domain.Entities;
 using Cortex.Module.Auth.Infrastructure.Identity;
 using Cortex.Module.Auth.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 namespace Cortex.Module.Auth.Infrastructure.Extensions
 {
     public static class DependencyInjection
@@ -35,6 +38,34 @@ namespace Cortex.Module.Auth.Infrastructure.Extensions
 
             services.AddMediatR(cfg =>
                 cfg.RegisterServicesFromAssembly(typeof(RegisterCommand).Assembly));
+            services.AddAuthInfrastructureAuthentication(configuration);
+            return services;
+        }
+        private static IServiceCollection AddAuthInfrastructureAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            var jwtSettings = configuration.GetSection("Jwt");
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.MapInboundClaims = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidAudience = jwtSettings["Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!))
+                };
+            });
+
+            services.AddAuthorization();
             return services;
         }
     }

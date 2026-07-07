@@ -1,8 +1,9 @@
 ﻿using Cortex.Module.Auth.Application.Login;
 using Cortex.Module.Auth.Application.Register;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Cortex.Api.Controllers
 {
@@ -36,5 +37,13 @@ namespace Cortex.Api.Controllers
             return Ok(new { token = result.Token });
         }
 
+        [HttpGet("me")]
+        [Authorize]
+        public IActionResult Me()
+        {
+            var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            var email = User.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
+            return Ok(new { userId, email });
+        }
     }
 }

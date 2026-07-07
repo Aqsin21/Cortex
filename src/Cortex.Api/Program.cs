@@ -1,6 +1,7 @@
 using Cortex.Module.Auth.Infrastructure.Extensions;
 using Cortex.Module.Issues.Infrastructure.Extensions;
 using Scalar.AspNetCore;
+using Cortex.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddIssuesInfrastructure(builder.Configuration);
 builder.Services.AddAuthInfrastructure(builder.Configuration);
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+builder.Services.AddCortexOpenApi();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
