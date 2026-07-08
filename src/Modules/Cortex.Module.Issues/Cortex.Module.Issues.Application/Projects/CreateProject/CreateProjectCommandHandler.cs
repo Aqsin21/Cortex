@@ -54,7 +54,7 @@ namespace Cortex.Module.Issues.Application.Projects.CreateProject
                 ProjectId = project.Id,
                 WorkspaceMemberId = requester.Id
             };
-            _context.ProjectMembers.Add(projectMember);
+            await _projectRepository.AddMemberAsync(projectMember, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return new CreateProjectResult

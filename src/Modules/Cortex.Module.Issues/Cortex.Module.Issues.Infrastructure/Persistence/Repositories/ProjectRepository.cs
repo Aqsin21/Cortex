@@ -31,7 +31,10 @@ namespace Cortex.Module.Issues.Infrastructure.Persistence.Repositories
                             p.Members.Any(pm => pm.WorkspaceMember.UserId == userId))
                 .ToListAsync(cancellationToken);
         }
-
+        public async Task AddMemberAsync(ProjectMember projectMember, CancellationToken cancellationToken)
+        {
+            await _context.ProjectMembers.AddAsync(projectMember, cancellationToken);
+        }
         public void Delete(Project project)
         {
             _context.Projects.Remove(project);
