@@ -17,6 +17,7 @@ namespace Cortex.Module.Issues.Infrastructure.Extensions
             services.AddScoped<IWorkspaceRepository, WorkspaceRepository>();
             services.AddScoped<IWorkSpaceMemberRepository, WorkSpaceMemberRepository>();
             services.AddScoped<IWorkSpaceRoleRepository, WorkSpaceRoleRepository>();
+            services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreateWorkspaceCommand).Assembly));
