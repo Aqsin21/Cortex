@@ -18,24 +18,15 @@ namespace Cortex.Module.Issues.Application.WorkSpaces.CreateWorkSpace
         {
             _workspaceRepository = workspaceRepository;
             _memberRepository = memberRepository;
-            _roleRepository = roleRepository;
+            _roleRepository = roleRepository;   
             _unitOfWork = unitOfWork;
         }
 
         public async Task<CreateWorkspaceResult> Handle(CreateWorkspaceCommand request, CancellationToken cancellationToken)
         {
-            var teamLeadRole = await _roleRepository.GetByNameAsync("TeamLead", cancellationToken);
+            var teamLeadRole = await _roleRepository.GetByNameAsync("TeamLead", cancellationToken)
+            ?? throw new InvalidOperationException("TeamLead role is not seeded in the database. Check migrations.");
 
-            if (teamLeadRole is null)
-            {
-                teamLeadRole = new WorkSpaceRole
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "TeamLead",
-                    Description = "The workspace administrator can manage projects and members."
-                };
-                await _roleRepository.AddAsync(teamLeadRole, cancellationToken);
-            }
 
             var workspace = new Workspace
             {
