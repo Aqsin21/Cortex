@@ -9,8 +9,9 @@ namespace Cortex.Module.Issues.Application.Abstraction
     {
         Task AddAsync(Project project, CancellationToken cancellationToken);
         Task AddMemberAsync(ProjectMember projectMember, CancellationToken cancellationToken);
-        Task<Project> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-        Task<List<Project>> GetByMemberUserIdAsync(string userId, Guid workSpaceId, CancellationToken cancellationToken);
+        Task<Project?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<List<Project>> GetByWorkspaceIdAsync(Guid workspaceId, CancellationToken cancellationToken);
+
         void Delete(Project project);
     }
 }

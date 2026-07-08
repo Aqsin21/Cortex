@@ -1,6 +1,5 @@
 ﻿using Cortex.Module.Issues.Application.Abstraction;
 using MediatR;
-
 namespace Cortex.Module.Issues.Application.Projects.GetProjects
 {
     public class GetProjectsQueryHandler : IRequestHandler<GetProjectsQuery, List<ProjectDto>>
@@ -14,8 +13,9 @@ namespace Cortex.Module.Issues.Application.Projects.GetProjects
 
         public async Task<List<ProjectDto>> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
         {
-            var projects = await _projectRepository.GetByMemberUserIdAsync(
-                request.UserId, request.WorkspaceId, cancellationToken);
+        
+            var projects = await _projectRepository.GetByWorkspaceIdAsync(
+                request.WorkspaceId, cancellationToken);
 
             return projects.Select(p => new ProjectDto
             {
