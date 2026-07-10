@@ -20,10 +20,10 @@ namespace Cortex.Module.Issues.Infrastructure.Persistence.Repositories
         public async Task<Project?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _context.Projects
+                .Include(p => p.Members) 
                 .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
         }
 
-        // DÜZELTME: Mantık hatasına sebep olan iç üye kontrolü (Any) kaldırıldı
         public async Task<List<Project>> GetByWorkspaceIdAsync(Guid workspaceId, CancellationToken cancellationToken)
         {
             return await _context.Projects
