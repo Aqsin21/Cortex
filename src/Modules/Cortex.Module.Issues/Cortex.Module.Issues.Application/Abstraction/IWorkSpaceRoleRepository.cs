@@ -9,5 +9,6 @@ namespace Cortex.Module.Issues.Application.Abstraction
     {
         Task<WorkSpaceRole?> GetByNameAsync(string name, CancellationToken cancellationToken);
         Task AddAsync(WorkSpaceRole role, CancellationToken cancellationToken);
+        Task<List<WorkSpaceRole>> GetAllAsync(CancellationToken cancellationToken);
     }
 }

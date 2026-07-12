@@ -1,9 +1,6 @@
 ﻿using Cortex.Module.Issues.Application.Abstraction;
 using Cortex.Module.Issues.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cortex.Module.Issues.Infrastructure.Persistence.Repositories
 {
@@ -24,6 +21,10 @@ namespace Cortex.Module.Issues.Infrastructure.Persistence.Repositories
         public async Task AddAsync(WorkSpaceRole role, CancellationToken cancellationToken)
         {
             await _context.WorkSpaceRoles.AddAsync(role, cancellationToken);
+        }
+        public async Task<List<WorkSpaceRole>> GetAllAsync(CancellationToken cancellationToken)
+        {
+            return await _context.WorkSpaceRoles.ToListAsync(cancellationToken);
         }
     }
 }
