@@ -1,5 +1,6 @@
 ﻿using Cortex.Module.Issues.Application.Abstraction;
 using Cortex.Module.Issues.Domain.Entities;
+using Cortex.Module.Issues.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cortex.Module.Issues.Infrastructure.Persistence.Repositories
@@ -34,6 +35,18 @@ namespace Cortex.Module.Issues.Infrastructure.Persistence.Repositories
         public void Delete(Issue issue)
         {
             _context.Issues.Remove(issue);
+        }
+        public async Task<List<Issue>> GetByProjectIdAsync(Guid projectId, IssueStatus? status, IssuePriority? priority, CancellationToken cancellationToken)
+        {
+            var query = _context.Issues.Where(i => i.ProjectId == projectId);
+
+            if (status.HasValue)
+                query = query.Where(i => i.Status == status.Value);
+
+            if (priority.HasValue)
+                query = query.Where(i => i.Priority == priority.Value);
+
+            return await query.ToListAsync(cancellationToken);
         }
     }
 }

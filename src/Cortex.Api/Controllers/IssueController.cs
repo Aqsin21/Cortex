@@ -50,7 +50,11 @@ namespace Cortex.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] Guid projectId, [FromQuery] Guid workspaceId)
+        public async Task<IActionResult> GetAll(
+        [FromQuery] Guid projectId,
+        [FromQuery] Guid workspaceId,
+        [FromQuery] IssueStatus? status,
+        [FromQuery] IssuePriority? priority)
         {
             var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
             if (userId is null) return Unauthorized();
@@ -59,13 +63,14 @@ namespace Cortex.Api.Controllers
             {
                 ProjectId = projectId,
                 WorkspaceId = workspaceId,
-                UserId = userId
+                UserId = userId,
+                Status = status,
+                Priority = priority
             };
 
             var result = await _mediator.Send(query);
             return Ok(result);
         }
-
         [HttpPatch("{issueId}/status")]
         public async Task<IActionResult> UpdateStatus(Guid issueId, [FromBody] UpdateIssueStatusRequest request)
         {

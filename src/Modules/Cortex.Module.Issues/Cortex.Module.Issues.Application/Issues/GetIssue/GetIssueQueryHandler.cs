@@ -18,14 +18,19 @@ namespace Cortex.Module.Issues.Application.Issues.GetIssues
 
         public async Task<List<IssueDto>> Handle(GetIssuesQuery request, CancellationToken cancellationToken)
         {
-            // Workspace üyesi mi kontrolü
+          
             var member = await _memberRepository.GetByUserIdAndWorkspaceAsync(
                 request.UserId, request.WorkspaceId, cancellationToken);
 
             if (member is null)
                 return new List<IssueDto>();
 
-            var issues = await _issueRepository.GetByProjectIdAsync(request.ProjectId, cancellationToken);
+            var issues = await _issueRepository.GetByProjectIdAsync(
+                request.ProjectId,
+                request.Status,
+                request.Priority,
+                cancellationToken);
+
 
             return issues.Select(i => new IssueDto
             {

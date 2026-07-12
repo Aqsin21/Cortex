@@ -8,6 +8,8 @@ namespace Cortex.Module.Issues.Application.Issues.GetIssues
         public Guid ProjectId { get; set; }
         public Guid WorkspaceId { get; set; }
         public required string UserId { get; set; }
+        public IssueStatus? Status { get; set; }
+        public IssuePriority? Priority { get; set; }
     }
 
     public class IssueDto
