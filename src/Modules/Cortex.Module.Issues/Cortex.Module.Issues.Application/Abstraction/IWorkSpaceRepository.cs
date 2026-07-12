@@ -5,5 +5,7 @@ namespace Cortex.Module.Issues.Application.Abstraction
     {
         Task AddAsync(Workspace workspace, CancellationToken cancellationToken);
         Task<Workspace?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<List<Workspace>> GetByUserIdAsync(string userId, CancellationToken cancellationToken);
+        void Delete(Workspace workspace);
     }
 }

@@ -1,7 +1,9 @@
-﻿using Cortex.Module.Issues.Application.Workspaces.GetWorkspaceMembers;
+﻿using Cortex.Module.Issues.Application.Workspaces.DeleteWorkspace;
+using Cortex.Module.Issues.Application.Workspaces.GetWorkspaceMembers;
 using Cortex.Module.Issues.Application.Workspaces.RemoveMember;
 using Cortex.Module.Issues.Application.WorkSpaces.AddMember;
 using Cortex.Module.Issues.Application.WorkSpaces.CreateWorkSpace;
+using Cortex.Module.Issues.Application.WorkSpaces.GetWorkSpaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -93,6 +95,35 @@ namespace Cortex.Api.Controllers
                 return BadRequest(new { error = result.Error });
 
             return NoContent();
+        }
+        [HttpDelete("DeleteWorkSpace/{workspaceId}")]
+        public async Task<IActionResult> Delete(Guid workspaceId)
+        {
+            var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            if (userId is null) return Unauthorized();
+
+            var command = new DeleteWorkspaceCommand
+            {
+                WorkspaceId = workspaceId,
+                RequestedByUserId = userId
+            };
+
+            var result = await _mediator.Send(command);
+
+            if (!result.Succeeded)
+                return BadRequest(new { error = result.Error });
+
+            return NoContent();
+        }
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            if (userId is null) return Unauthorized();
+
+            var query = new GetWorkSpaceQuery { UserId = userId };
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
     }
 

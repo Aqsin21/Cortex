@@ -25,5 +25,15 @@ namespace Cortex.Module.Issues.Infrastructure.Persistence.Repositories
         {
             return await _context.Workspaces.FirstOrDefaultAsync(w => w.Id == id, cancellationToken);
         }
+        public void Delete(Workspace workspace)
+        {
+            _context.Workspaces.Remove(workspace);
+        }
+        public async Task<List<Workspace>> GetByUserIdAsync(string userId, CancellationToken cancellationToken)
+        {
+            return await _context.Workspaces
+                .Where(w => w.Members.Any(m => m.UserId == userId))
+                .ToListAsync(cancellationToken);
+        }
     }
 }
