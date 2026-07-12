@@ -27,5 +27,23 @@ namespace Cortex.Module.Issues.Infrastructure.Persistence.Repositories
                 .Include(m => m.WorkSpaceRole)
                 .FirstOrDefaultAsync(m => m.UserId == userId && m.WorkspaceId == workspaceId, cancellationToken);
         }
+        public async Task<List<WorkSpaceMember>> GetByWorkspaceIdAsync(Guid workspaceId, CancellationToken cancellationToken)
+        {
+            return await _context.WorkSpaceMembers
+                .Include(m => m.WorkSpaceRole)
+                .Where(m => m.WorkspaceId == workspaceId)
+                .ToListAsync(cancellationToken);
+        }
+        public async Task<WorkSpaceMember?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.WorkSpaceMembers
+                .Include(m => m.WorkSpaceRole)
+                .FirstOrDefaultAsync(m => m.Id == id, cancellationToken);
+        }
+
+        public void Delete(WorkSpaceMember member)
+        {
+            _context.WorkSpaceMembers.Remove(member);
+        }
     }
 }

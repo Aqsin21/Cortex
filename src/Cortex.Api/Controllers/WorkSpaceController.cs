@@ -1,4 +1,6 @@
-﻿using Cortex.Module.Issues.Application.WorkSpaces.AddMember;
+﻿using Cortex.Module.Issues.Application.Workspaces.GetWorkspaceMembers;
+using Cortex.Module.Issues.Application.Workspaces.RemoveMember;
+using Cortex.Module.Issues.Application.WorkSpaces.AddMember;
 using Cortex.Module.Issues.Application.WorkSpaces.CreateWorkSpace;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 namespace Cortex.Api.Controllers
 {
     [ApiController]
-    [Route("api/Createworkspaces")]
+    [Route("api/WorkSpaces")]
     [Authorize]
     public class WorkspaceController : ControllerBase
     {
@@ -18,7 +20,7 @@ namespace Cortex.Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost]
+        [HttpPost("CreateWorkSpace")]
         public async Task<IActionResult> Create([FromBody] CreateWorkspaceRequest request)
         {
             var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
@@ -56,6 +58,41 @@ namespace Cortex.Api.Controllers
                 return BadRequest(new { error = result.Error });
 
             return Ok(new { workSpaceMemberId = result.WorkSpaceMemberId });
+        }
+        [HttpGet("GetMembers")]
+        public async Task<IActionResult> GetMembers([FromQuery] Guid workspaceId)
+        {
+            var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            if (userId is null) return Unauthorized();
+
+            var query = new GetWorkspaceMembersQuery
+            {
+                WorkspaceId = workspaceId,
+                UserId = userId
+            };
+
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        [HttpDelete("DeleteMmebers/{memberId}")]
+        public async Task<IActionResult> RemoveMember(Guid memberId, [FromQuery] Guid workspaceId)
+        {
+            var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            if (userId is null) return Unauthorized();
+
+            var command = new RemoveWorkspaceMemberCommand
+            {
+                WorkspaceId = workspaceId,
+                TargetMemberId = memberId,
+                RequestedByUserId = userId
+            };
+
+            var result = await _mediator.Send(command);
+
+            if (!result.Succeeded)
+                return BadRequest(new { error = result.Error });
+
+            return NoContent();
         }
     }
 
