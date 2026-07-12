@@ -8,7 +8,7 @@ namespace Cortex.Module.Issues.Application.Issues.CreateIssue
     public class CreateIssueCommandHandler : IRequestHandler<CreateIssueCommand, CreateIssueResult>
     {
         private readonly IIssueRepository _issueRepository;
-        private readonly IProjectRepository _projectRepository; // YENİ: Projeyi doğrulamak için eklendi
+        private readonly IProjectRepository _projectRepository;
         private readonly IWorkSpaceMemberRepository _memberRepository;
         private readonly IUnitOfWork _unitOfWork;
 
@@ -46,24 +46,7 @@ namespace Cortex.Module.Issues.Application.Issues.CreateIssue
                 };
             }
 
-          
-            if (request.AssigneeWorkSpaceMemberId.HasValue)
-            {
-                
-                var isProjectMember = project.Members.Any(pm => pm.WorkspaceMemberId == request.AssigneeWorkSpaceMemberId.Value);
-
-                if (!isProjectMember)
-                {
-                    return new CreateIssueResult
-                    {
-                        Succeeded = false,
-                        Error = "The assignee must be a member of this specific project."
-                    };
-                }
-            }
-
-            
-            var issue = new Issue
+                var issue = new Issue
             {
                 Id = Guid.NewGuid(),
                 ProjectId = request.ProjectId,

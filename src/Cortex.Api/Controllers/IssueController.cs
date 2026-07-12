@@ -1,4 +1,5 @@
-﻿using Cortex.Module.Issues.Application.Issues.CreateIssue;
+﻿using Cortex.Module.Issues.Application.Issues.AssignIssue;
+using Cortex.Module.Issues.Application.Issues.CreateIssue;
 using Cortex.Module.Issues.Application.Issues.CreateIssue.Cortex.Module.Issues.Application.Issues.CreateIssue;
 using Cortex.Module.Issues.Application.Issues.DeleteIssue;
 using Cortex.Module.Issues.Application.Issues.GetIssues;
@@ -107,6 +108,27 @@ namespace Cortex.Api.Controllers
 
             return NoContent();
         }
+        [HttpPatch("{issueId}/assign")]
+        public async Task<IActionResult> Assign(Guid issueId, [FromBody] AssignIssueRequest request)
+        {
+            var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            if (userId is null) return Unauthorized();
+
+            var command = new AssignIssueCommand
+            {
+                IssueId = issueId,
+                WorkspaceId = request.WorkspaceId,
+                RequestedByUserId = userId,
+                AssigneeWorkSpaceMemberId = request.AssigneeWorkSpaceMemberId
+            };
+
+            var result = await _mediator.Send(command);
+
+            if (!result.Succeeded)
+                return BadRequest(new { error = result.Error });
+
+            return NoContent();
+        }
     }
 
     public class CreateIssueRequest
@@ -123,5 +145,10 @@ namespace Cortex.Api.Controllers
     {
         public Guid WorkspaceId { get; set; }
         public IssueStatus NewStatus { get; set; }
+    }
+    public class AssignIssueRequest
+    {
+        public Guid WorkspaceId { get; set; }
+        public Guid? AssigneeWorkSpaceMemberId { get; set; }
     }
 }
