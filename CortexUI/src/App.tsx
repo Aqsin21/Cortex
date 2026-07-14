@@ -1,18 +1,16 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
-import DashboardPage from './pages/DashBoard' 
+import DashboardPage from './pages/DashBoard'
+import Layout from './components/Layout'
+import WorkspacePage from './pages/WorkSpacePage'
+import ProjectPage from './pages/ProjectPage'
 
-// Dinamik Token Kontrolü Yapan Yardımcı Bileşen
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const token = localStorage.getItem('token');
-  
-  // Her yönlendirmede güncel localstorage kontrol edilir
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
-  return <>{children}</>;
-};
+  const token = localStorage.getItem('token')
+  if (!token) return <Navigate to="/login" replace />
+  return <>{children}</>
+}
 
 function App() {
   return (
@@ -20,16 +18,39 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        
-        {/* Dashboard'u korumalı bileşen içine aldık */}
+
         <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <DashboardPage />
+              <Layout>
+                <DashboardPage />
+              </Layout>
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/workspaces/:workspaceId"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <WorkspacePage />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+           path="/workspaces/:workspaceId/projects/:projectId"
+            element={
+           <ProtectedRoute>
+            <Layout>
+             <ProjectPage />
+              </Layout>
+              </ProtectedRoute>
+  }
+/>
+
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>
