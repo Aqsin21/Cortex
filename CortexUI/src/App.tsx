@@ -5,7 +5,7 @@ import DashboardPage from './pages/DashBoard'
 import Layout from './components/Layout'
 import WorkspacePage from './pages/WorkSpacePage'
 import ProjectPage from './pages/ProjectPage'
-
+import CreateWorkspacePage from './pages/CreateWorkspacePage'
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = localStorage.getItem('token')
   if (!token) return <Navigate to="/login" replace />
@@ -50,6 +50,16 @@ function App() {
               </ProtectedRoute>
   }
 />
+        <Route
+          path="/workspaces/new"
+            element={
+            <ProtectedRoute>
+             <Layout>
+                <CreateWorkspacePage />
+                </Layout>
+            </ProtectedRoute>
+             }
+          />
 
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
