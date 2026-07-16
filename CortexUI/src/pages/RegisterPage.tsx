@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { apiFetch } from '../services/api'
 
 function RegisterPage() {
   const [firstName, setFirstName] = useState('')
@@ -15,23 +16,52 @@ function RegisterPage() {
     setError('')
 
     try {
-      const response = await fetch('https://localhost:7180/api/auth/register', {
+      const response = await apiFetch('/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ firstName, lastName, email, password })
       })
 
-      const data = await response.json()
+      
+      let data: any = null;
+      try {
+        data = await response.json()
+      } catch (jsonErr) {
+        
+      }
 
       if (!response.ok) {
-        setError(data.error || 'Register failed.')
+        if (!data) {
+          setError('Register failed. No response from server.')
+          return
+        }
+
+        let rawMessage = ''
+
+        
+        if (Array.isArray(data)) {
+          rawMessage = data.join(' ')
+        } 
+        
+        else if (data.errors) {
+          rawMessage = Object.values(data.errors).flat().join(' ')
+        } 
+
+        else {
+          rawMessage = data.error || data.message || 'Register failed.'
+        }
+
+       
+        const cleanMessage = rawMessage.replace(/Username/g, 'Email').replace(/username/g, 'email')
+        setError(cleanMessage)
         return
       }
 
+      
       navigate('/login')
 
     } catch (err) {
-      setError('Could not connect to server.')
+      
+      setError('Could not connect to server. Please check your connection.')
     } finally {
       setLoading(false)
     }
