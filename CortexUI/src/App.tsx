@@ -6,6 +6,9 @@ import Layout from './components/Layout'
 import WorkspacePage from './pages/WorkSpacePage'
 import ProjectPage from './pages/ProjectPage'
 import CreateWorkspacePage from './pages/CreateWorkspacePage'
+import CreateProjectPage from './pages/CreateProjectPage'
+import CreateIssuePage from './pages/CreateIssuePage'
+
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = localStorage.getItem('token')
   if (!token) return <Navigate to="/login" replace />
@@ -21,45 +24,34 @@ function App() {
 
         <Route
           path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <DashboardPage />
-              </Layout>
-            </ProtectedRoute>
-          }
+          element={<ProtectedRoute><Layout><DashboardPage /></Layout></ProtectedRoute>}
+        />
+
+        {/* Önce spesifik route'lar, sonra parametreli route'lar */}
+        <Route
+          path="/workspaces/new"
+          element={<ProtectedRoute><Layout><CreateWorkspacePage /></Layout></ProtectedRoute>}
+        />
+
+        <Route
+          path="/workspaces/:workspaceId/projects/new"
+          element={<ProtectedRoute><Layout><CreateProjectPage /></Layout></ProtectedRoute>}
+        />
+
+        <Route
+          path="/workspaces/:workspaceId/projects/:projectId/issues/new"
+          element={<ProtectedRoute><Layout><CreateIssuePage /></Layout></ProtectedRoute>}
+        />
+
+        <Route
+          path="/workspaces/:workspaceId/projects/:projectId"
+          element={<ProtectedRoute><Layout><ProjectPage /></Layout></ProtectedRoute>}
         />
 
         <Route
           path="/workspaces/:workspaceId"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <WorkspacePage />
-              </Layout>
-            </ProtectedRoute>
-          }
+          element={<ProtectedRoute><Layout><WorkspacePage /></Layout></ProtectedRoute>}
         />
-        <Route
-           path="/workspaces/:workspaceId/projects/:projectId"
-            element={
-           <ProtectedRoute>
-            <Layout>
-             <ProjectPage />
-              </Layout>
-              </ProtectedRoute>
-  }
-/>
-        <Route
-          path="/workspaces/new"
-            element={
-            <ProtectedRoute>
-             <Layout>
-                <CreateWorkspacePage />
-                </Layout>
-            </ProtectedRoute>
-             }
-          />
 
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>

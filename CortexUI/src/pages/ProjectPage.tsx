@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { apiFetch } from '../services/api'
 
 interface Issue {
@@ -28,6 +28,7 @@ const PRIORITY_LABELS: Record<number, { label: string; color: string }> = {
 
 function ProjectPage() {
   const { workspaceId, projectId } = useParams()
+  const navigate = useNavigate()
   const [issues, setIssues] = useState<Issue[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -76,7 +77,10 @@ function ProjectPage() {
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-gray-800">Issues</h2>
-        <button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+        <button
+          onClick={() => navigate(`/workspaces/${workspaceId}/projects/${projectId}/issues/new`)}
+          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+        >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
@@ -144,7 +148,10 @@ function ProjectPage() {
                 ))}
 
                 {column.id === 1 && (
-                  <button className="w-full flex items-center justify-center gap-2 py-2 rounded-lg border border-dashed border-gray-200 text-sm text-gray-400 hover:border-indigo-300 hover:text-indigo-500 transition-colors">
+                  <button
+                    onClick={() => navigate(`/workspaces/${workspaceId}/projects/${projectId}/issues/new`)}
+                    className="w-full flex items-center justify-center gap-2 py-2 rounded-lg border border-dashed border-gray-200 text-sm text-gray-400 hover:border-indigo-300 hover:text-indigo-500 transition-colors"
+                  >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
