@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { apiFetch } from '../services/api'
+import { useWorkspace } from '../context/WorkSpaceContext'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -129,6 +130,7 @@ function Layout({ children }: LayoutProps) {
 // Workspace listesini ayrı component olarak tutuyoruz
 function WorkspaceList() {
   const navigate = useNavigate()
+  const { setCurrentRole } = useWorkspace()
   const [workspaces, setWorkspaces] = useState<{ id: string; name: string; roleName: string }[]>([])
 
   const colors = [
@@ -151,13 +153,13 @@ function WorkspaceList() {
 
   return (
     <div className="space-y-1">
-      {workspaces.length === 0 && (
-        <p className="text-xs text-gray-400 px-3 py-1">No workspaces yet</p>
-      )}
       {workspaces.map((ws, i) => (
         <button
           key={ws.id}
-          onClick={() => navigate(`/workspaces/${ws.id}`)}
+          onClick={() => {
+            setCurrentRole(ws.roleName)  // ← rolü context'e yaz
+            navigate(`/workspaces/${ws.id}`)
+          }}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors"
         >
           <div className={`w-3 h-3 rounded-sm ${colors[i % colors.length]}`} />

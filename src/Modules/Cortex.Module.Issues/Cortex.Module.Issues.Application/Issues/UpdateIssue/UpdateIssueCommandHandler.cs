@@ -41,28 +41,16 @@ namespace Cortex.Module.Issues.Application.Issues.UpdateIssueStatus
 
             if (isTeamLead)
             {
-                allowed = true; 
+                allowed = true;
             }
             else if (isAssignee)
             {
-                
-                allowed = request.NewStatus == IssueStatus.InProgress
-                       || request.NewStatus == IssueStatus.InReview;
+                allowed = true; 
             }
-            else if (isQA)
+            else
             {
-                // QA sadece InReview'daki issue'yu Done yapabilir
-                allowed = issue.Status == IssueStatus.InReview
-                       && request.NewStatus == IssueStatus.Done;
+                allowed = false; 
             }
-
-            if (!allowed)
-                return new UpdateIssueStatusResult
-                {
-                    Succeeded = false,
-                    Error = "You are not authorized to make this status transition."
-                };
-
             issue.Status = request.NewStatus;
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -31,6 +31,7 @@ function ProjectPage() {
   const navigate = useNavigate()
   const [issues, setIssues] = useState<Issue[]>([])
   const [loading, setLoading] = useState(true)
+  const [statusError, setStatusError] = useState('')
 
   useEffect(() => {
     fetchIssues()
@@ -51,19 +52,48 @@ function ProjectPage() {
   }
 
   async function handleStatusChange(issueId: string, newStatus: number) {
+    setStatusError('')
     try {
-      await apiFetch(`/issues/${issueId}/status`, {
+      const response = await apiFetch(`/issues/${issueId}/status`, {
         method: 'PATCH',
         body: JSON.stringify({
           workspaceId: workspaceId,
           newStatus: newStatus
         })
       })
+
+      if (!response.ok) {
+        const data = await response.json()
+        setStatusError(data.error || 'You are not authorized to make this status change.')
+        return
+      }
+
       setIssues(prev =>
         prev.map(i => i.id === issueId ? { ...i, status: newStatus } : i)
       )
     } catch (err) {
       console.error('Failed to update status:', err)
+    }
+  }
+
+  async function handleDelete(issueId: string) {
+    if (!confirm('Are you sure you want to delete this issue?')) return
+
+    setStatusError('')
+    try {
+      const response = await apiFetch(`/issues/${issueId}?workspaceId=${workspaceId}`, {
+        method: 'DELETE'
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        setStatusError(data.error || 'Failed to delete issue.')
+        return
+      }
+
+      setIssues(prev => prev.filter(i => i.id !== issueId))
+    } catch (err) {
+      console.error('Failed to delete issue:', err)
     }
   }
 
@@ -88,6 +118,12 @@ function ProjectPage() {
         </button>
       </div>
 
+      {statusError && (
+        <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+          {statusError}
+        </div>
+      )}
+
       <div className="flex gap-4 overflow-x-auto pb-4 flex-1">
         {STATUS_COLUMNS.map(column => {
           const columnIssues = issues.filter(i => i.status === column.id)
@@ -109,9 +145,20 @@ function ProjectPage() {
                     key={issue.id}
                     className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-shadow"
                   >
-                    <h4 className="text-sm font-medium text-gray-800 mb-2 line-clamp-2">
-                      {issue.title}
-                    </h4>
+                    {/* Title + Delete */}
+                    <div className="flex items-start justify-between mb-2">
+                      <h4 className="text-sm font-medium text-gray-800 line-clamp-2 flex-1">
+                        {issue.title}
+                      </h4>
+                      <button
+                        onClick={() => handleDelete(issue.id)}
+                        className="ml-2 text-gray-300 hover:text-red-500 transition-colors flex-shrink-0"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
 
                     <p className="text-xs text-gray-400 mb-3 line-clamp-2">
                       {issue.description}
@@ -147,17 +194,15 @@ function ProjectPage() {
                   </div>
                 ))}
 
-                {column.id === 1 && (
-                  <button
-                    onClick={() => navigate(`/workspaces/${workspaceId}/projects/${projectId}/issues/new`)}
-                    className="w-full flex items-center justify-center gap-2 py-2 rounded-lg border border-dashed border-gray-200 text-sm text-gray-400 hover:border-indigo-300 hover:text-indigo-500 transition-colors"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                    Add issue
-                  </button>
-                )}
+                <button
+                  onClick={() => navigate(`/workspaces/${workspaceId}/projects/${projectId}/issues/new`)}
+                  className="w-full flex items-center justify-center gap-2 py-2 rounded-lg border border-dashed border-gray-200 text-sm text-gray-400 hover:border-indigo-300 hover:text-indigo-500 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Add issue
+                </button>
               </div>
             </div>
           )

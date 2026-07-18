@@ -18,7 +18,6 @@ namespace Cortex.Module.Issues.Application.Issues.GetIssues
 
         public async Task<List<IssueDto>> Handle(GetIssuesQuery request, CancellationToken cancellationToken)
         {
-          
             var member = await _memberRepository.GetByUserIdAndWorkspaceAsync(
                 request.UserId, request.WorkspaceId, cancellationToken);
 
@@ -26,11 +25,13 @@ namespace Cortex.Module.Issues.Application.Issues.GetIssues
                 return new List<IssueDto>();
 
             var issues = await _issueRepository.GetByProjectIdAsync(
-                request.ProjectId,
-                request.Status,
-                request.Priority,
-                cancellationToken);
+                request.ProjectId, request.Status, request.Priority, cancellationToken);
 
+            
+            if (member.WorkSpaceRole.Name != "TeamLead")
+            {
+                issues = issues.Where(i => i.AssigneeId == member.Id).ToList();
+            }
 
             return issues.Select(i => new IssueDto
             {
