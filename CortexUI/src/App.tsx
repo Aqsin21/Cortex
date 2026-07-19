@@ -9,7 +9,8 @@ import ProjectPage from './pages/ProjectPage'
 import CreateWorkspacePage from './pages/CreateWorkspacePage'
 import CreateProjectPage from './pages/CreateProjectPage'
 import CreateIssuePage from './pages/CreateIssuePage'
-
+import IssuesPage from './pages/IssuesPage'
+import AddMemberPage from './pages/AddMemberPage'
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = localStorage.getItem('token')
   if (!token) return <Navigate to="/login" replace />
@@ -18,21 +19,28 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <WorkspaceProvider>       
+    <WorkspaceProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/dashboard" element={<ProtectedRoute><Layout><DashboardPage /></Layout></ProtectedRoute>} />
+          <Route path="/issues" element={<ProtectedRoute><Layout><IssuesPage /></Layout></ProtectedRoute>} />
+
+          {/* Önce spesifik route'lar */}
           <Route path="/workspaces/new" element={<ProtectedRoute><Layout><CreateWorkspacePage /></Layout></ProtectedRoute>} />
+          <Route path="/workspaces/:workspaceId/add-member" element={<ProtectedRoute><Layout><AddMemberPage /></Layout></ProtectedRoute>} />
           <Route path="/workspaces/:workspaceId/projects/new" element={<ProtectedRoute><Layout><CreateProjectPage /></Layout></ProtectedRoute>} />
           <Route path="/workspaces/:workspaceId/projects/:projectId/issues/new" element={<ProtectedRoute><Layout><CreateIssuePage /></Layout></ProtectedRoute>} />
           <Route path="/workspaces/:workspaceId/projects/:projectId" element={<ProtectedRoute><Layout><ProjectPage /></Layout></ProtectedRoute>} />
+
+          {/* En sonda parametreli route'lar */}
           <Route path="/workspaces/:workspaceId" element={<ProtectedRoute><Layout><WorkspacePage /></Layout></ProtectedRoute>} />
+
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </BrowserRouter>
-    </WorkspaceProvider>       
+    </WorkspaceProvider>
   )
 }
 
