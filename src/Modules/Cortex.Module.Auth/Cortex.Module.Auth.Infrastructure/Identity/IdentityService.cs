@@ -59,6 +59,36 @@ namespace Cortex.Module.Auth.Infrastructure.Identity
                 Email = user.Email
             };
         }
+        public async Task<IdentityOperationResult> UpdateProfileAsync(string userId, string firstName, string lastName)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+                return new IdentityOperationResult { Succeeded = false, Errors = ["User not found."] };
+
+            user.FirstName = firstName;
+            user.LastName = lastName;
+
+            var result = await _userManager.UpdateAsync(user);
+            return new IdentityOperationResult
+            {
+                Succeeded = result.Succeeded,
+                Errors = result.Errors.Select(e => e.Description)
+            };
+        }
+
+        public async Task<IdentityOperationResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+                return new IdentityOperationResult { Succeeded = false, Errors = ["User not found."] };
+
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            return new IdentityOperationResult
+            {
+                Succeeded = result.Succeeded,
+                Errors = result.Errors.Select(e => e.Description)
+            };
+        }
         public async Task<UserLookupResult?> FindByEmailAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);

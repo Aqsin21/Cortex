@@ -11,6 +11,7 @@ import CreateProjectPage from './pages/CreateProjectPage'
 import CreateIssuePage from './pages/CreateIssuePage'
 import IssuesPage from './pages/IssuesPage'
 import AddMemberPage from './pages/AddMemberPage'
+import ProfilePage from './pages/ProfilePage'
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = localStorage.getItem('token')
   if (!token) return <Navigate to="/login" replace />
@@ -29,6 +30,7 @@ function App() {
 
           {/* Önce spesifik route'lar */}
           <Route path="/workspaces/new" element={<ProtectedRoute><Layout><CreateWorkspacePage /></Layout></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Layout><ProfilePage /></Layout></ProtectedRoute>} />
           <Route path="/workspaces/:workspaceId/add-member" element={<ProtectedRoute><Layout><AddMemberPage /></Layout></ProtectedRoute>} />
           <Route path="/workspaces/:workspaceId/projects/new" element={<ProtectedRoute><Layout><CreateProjectPage /></Layout></ProtectedRoute>} />
           <Route path="/workspaces/:workspaceId/projects/:projectId/issues/new" element={<ProtectedRoute><Layout><CreateIssuePage /></Layout></ProtectedRoute>} />

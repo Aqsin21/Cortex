@@ -58,7 +58,7 @@ function AddMemberPage() {
     setSuccess('')
 
     try {
-      const response = await apiFetch('/WorkSpaces/members', {
+      const response = await apiFetch('/WorkSpaces/Addmembers', {
         method: 'POST',
         body: JSON.stringify({
           workspaceId,

@@ -11,6 +11,8 @@ namespace Cortex.Module.Auth.Application.Abstraction
         Task<IdentityOperationResult> RegisterAsync(string email, string password, string firstName, string lastName);
         Task<LoginOperationResult> ValidateCredentialsAsync(string email, string password);
         Task<UserLookupResult?> FindByEmailAsync(string email);
+        Task<IdentityOperationResult> UpdateProfileAsync(string userId, string firstName, string lastName);
+        Task<IdentityOperationResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
     }
     public class UserLookupResult
     {

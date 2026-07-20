@@ -10,10 +10,55 @@ interface LayoutProps {
 function Layout({ children }: LayoutProps) {
   const navigate = useNavigate()
   const location = useLocation()
+  const [userInitial, setUserInitial] = useState('U')
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const response = await apiFetch('/auth/me')
+        const data = await response.json()
+        setUserInitial(data.firstName?.charAt(0).toUpperCase() || 'U')
+      } catch {
+        console.error('Failed to fetch user')
+      }
+    }
+    fetchUser()
+  }, [])
 
   function handleLogout() {
     localStorage.removeItem('token')
     navigate('/login')
+  }
+
+  const navItems = [
+    {
+      label: 'Home', path: '/dashboard', icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+      )
+    },
+    {
+      label: 'My Issues', path: '/issues', icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+      )
+    },
+    {
+      label: 'Search', path: '/search', icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      )
+    },
+  ]
+
+  const pageTitle = () => {
+    if (location.pathname === '/dashboard') return 'Home'
+    if (location.pathname === '/issues') return 'My Issues'
+    if (location.pathname === '/profile') return 'Profile Settings'
+    return 'Cortex'
   }
 
   return (
@@ -31,23 +76,7 @@ function Layout({ children }: LayoutProps) {
 
         {/* Main Nav */}
         <nav className="space-y-1 mb-6">
-          {[
-            { label: 'Home', path: '/dashboard', icon: (
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-            )},
-            { label: 'My Issues', path: '/issues', icon: (
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-            )},
-            { label: 'Search', path: '/search', icon: (
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            )},
-          ].map(item => (
+          {navItems.map(item => (
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
@@ -82,16 +111,6 @@ function Layout({ children }: LayoutProps) {
         {/* Bottom */}
         <div className="mt-auto space-y-1">
           <button
-            onClick={() => navigate('/members')}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            Add Member
-          </button>
-
-          <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 transition-colors"
           >
@@ -108,12 +127,14 @@ function Layout({ children }: LayoutProps) {
         {/* Header */}
         <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
           <h1 className="text-base font-semibold text-gray-800">
-            {location.pathname === '/dashboard' ? 'Home' :
-             location.pathname === '/issues' ? 'My Issues' : 'Cortex'}
+            {pageTitle()}
           </h1>
           <div className="flex items-center gap-3">
-            <button className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
-              U
+            <button
+              onClick={() => navigate('/profile')}
+              className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-bold hover:bg-indigo-700 transition-colors"
+            >
+              {userInitial}
             </button>
           </div>
         </header>
@@ -127,7 +148,6 @@ function Layout({ children }: LayoutProps) {
   )
 }
 
-// Workspace listesini ayrı component olarak tutuyoruz
 function WorkspaceList() {
   const navigate = useNavigate()
   const { setCurrentRole } = useWorkspace()
@@ -153,11 +173,14 @@ function WorkspaceList() {
 
   return (
     <div className="space-y-1">
+      {workspaces.length === 0 && (
+        <p className="text-xs text-gray-400 px-3 py-1">No workspaces yet</p>
+      )}
       {workspaces.map((ws, i) => (
         <button
           key={ws.id}
           onClick={() => {
-            setCurrentRole(ws.roleName)  // ← rolü context'e yaz
+            setCurrentRole(ws.roleName)
             navigate(`/workspaces/${ws.id}`)
           }}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors"
