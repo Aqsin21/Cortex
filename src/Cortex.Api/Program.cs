@@ -1,7 +1,8 @@
+using Cortex.Api.Exceptions;
+using Cortex.Api.Extensions;
 using Cortex.Module.Auth.Infrastructure.Extensions;
 using Cortex.Module.Issues.Infrastructure.Extensions;
 using Scalar.AspNetCore;
-using Cortex.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
@@ -17,11 +18,14 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddIssuesInfrastructure(builder.Configuration);
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 builder.Services.AddAuthInfrastructure(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddCortexOpenApi();
 
 var app = builder.Build();
+app.UseExceptionHandler();  
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

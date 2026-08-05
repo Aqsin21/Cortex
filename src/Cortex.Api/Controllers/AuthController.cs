@@ -113,6 +113,8 @@ namespace Cortex.Api.Controllers
             return Ok();
         }
 
+        
+
         public class UpdateProfileRequest
         {
             public required string FirstName { get; set; }
