@@ -1,8 +1,11 @@
 ﻿using Cortex.Module.Auth.Application.Abstraction;
+using Cortex.Module.Auth.Application.Behaviors;
 using Cortex.Module.Auth.Application.Register;
 using Cortex.Module.Auth.Domain.Entities;
 using Cortex.Module.Auth.Infrastructure.Identity;
 using Cortex.Module.Auth.Infrastructure.Persistence;
+using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +40,11 @@ namespace Cortex.Module.Auth.Infrastructure.Extensions
             services.AddScoped<ITokenService, JwtTokenService>();
 
             services.AddMediatR(cfg =>
-                cfg.RegisterServicesFromAssembly(typeof(RegisterCommand).Assembly));
+            {
+                cfg.RegisterServicesFromAssembly(typeof(RegisterCommand).Assembly);
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviors<,>));
+            });
+            services.AddValidatorsFromAssembly(typeof(RegisterCommand).Assembly);
             services.AddAuthInfrastructureAuthentication(configuration);
             return services;
         }
