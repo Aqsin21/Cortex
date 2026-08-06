@@ -13,7 +13,19 @@ namespace Cortex.Module.Auth.Application.Abstraction
         Task<UserLookupResult?> FindByEmailAsync(string email);
         Task<IdentityOperationResult> UpdateProfileAsync(string userId, string firstName, string lastName);
         Task<IdentityOperationResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
+        Task<string> GenerateRefreshTokenAsync(string userId);
+        Task<RefreshTokenResult> RefreshTokenAsync(string refreshToken);
+        Task<bool> RevokeTokenAsync(string refreshToken);
     }
+
+    public class RefreshTokenResult 
+    {
+        public bool Succeeded { get; set; }
+        public string? AccessToken { get; set; }
+        public string? RefreshToken { get; set; }
+        public string? Error { get; set; }
+    }
+
     public class UserLookupResult
     {
         public required string UserId { get; set; }

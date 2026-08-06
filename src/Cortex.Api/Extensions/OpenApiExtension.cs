@@ -18,7 +18,7 @@ namespace Cortex.Api.Extensions
                         Scheme = "bearer",
                         BearerFormat = "JWT",
                         In = ParameterLocation.Header,
-                        Description = "JWT Bearer token girin"
+                        Description = "JWT Bearer token girin",
                     };
 
                     document.Security ??= new List<OpenApiSecurityRequirement>();

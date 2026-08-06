@@ -1,9 +1,11 @@
 ﻿using Cortex.Module.Auth.Application.ChangePassword;
 using Cortex.Module.Auth.Application.Login;
+using Cortex.Module.Auth.Application.RefreshToken;
 using Cortex.Module.Auth.Application.Register;
 using Cortex.Module.Auth.Application.UpdateProfile;
 using Cortex.Module.Auth.Application.Users.SearchByEmail;
 using Cortex.Module.Auth.Domain.Entities;
+using Cortex.Module.Auth.Application.RevokeToken;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -112,8 +114,33 @@ namespace Cortex.Api.Controllers
 
             return Ok();
         }
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
+        {
+            var result = await _mediator.Send(new RefreshTokenCommand { Token = request.Token });
 
-        
+            if (!result.Succeeded)
+                return Unauthorized(new { error = result.Error });
+
+            return Ok(new
+            {
+                accessToken = result.AccessToken,
+                refreshToken = result.RefreshToken
+            });
+        }
+        [HttpPost("revoke")]
+        [Authorize]
+        public async Task<IActionResult> Revoke([FromBody] RevokeTokenRequest request)
+        {
+            var result = await _mediator.Send(new RevokeTokenCommand { Token = request.Token });
+
+            if (!result)
+                return BadRequest(new { error = "Invalid or already revoked token." });
+
+            return Ok();
+        }
+
+
 
         public class UpdateProfileRequest
         {
@@ -125,6 +152,14 @@ namespace Cortex.Api.Controllers
         {
             public required string CurrentPassword { get; set; }
             public required string NewPassword { get; set; }
+        }
+        public class RefreshTokenRequest
+        {
+            public required string Token { get; set; }
+        }
+        public class RevokeTokenRequest()
+        {
+            public required string Token { get; set; }
         }
 
     }

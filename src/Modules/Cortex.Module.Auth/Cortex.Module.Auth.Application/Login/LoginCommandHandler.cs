@@ -19,10 +19,11 @@ namespace Cortex.Module.Auth.Application.Login
             {
                 return new LoginResult { Succeeded = false, Error = result.Error };
             }
+            var refreshToken = await _identityService.GenerateRefreshTokenAsync(result.UserId!);
 
             var token = _tokenService.GenerateToken(result.UserId!, result.Email!);
 
-            return new LoginResult { Succeeded = true, Token = token };
+            return new LoginResult { Succeeded = true, Token = token, RefreshToken =refreshToken};
         }
 
 
