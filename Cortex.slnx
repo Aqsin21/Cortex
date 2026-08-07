@@ -16,4 +16,7 @@
     <Project Path="src/Modules/Cortex.Module.Issues/Cortex.Module.Issues.Domain/Cortex.Module.Issues.Domain.csproj" />
     <Project Path="src/Modules/Cortex.Module.Issues/Cortex.Module.Issues.Infrastructure/Cortex.Module.Issues.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="CortexşUnitTests/Cortex.UnitTests.csproj" Id="faa12aae-9c21-4035-85ba-10f043e2282f" />
+  </Folder>
 </Solution>

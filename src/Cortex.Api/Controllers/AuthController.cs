@@ -46,7 +46,6 @@ namespace Cortex.Api.Controllers
 
             return Ok(new { token = result.Token });
         }
-
         [HttpGet("me")]
         [Authorize]
         public async Task<IActionResult> Me()
@@ -140,14 +139,11 @@ namespace Cortex.Api.Controllers
             return Ok();
         }
 
-
-
         public class UpdateProfileRequest
         {
             public required string FirstName { get; set; }
             public required string LastName { get; set; }
         }
-
         public class ChangePasswordRequest
         {
             public required string CurrentPassword { get; set; }
